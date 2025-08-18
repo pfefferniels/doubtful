@@ -1,0 +1,48 @@
+{
+  "name": "doubtful",
+  "version": "0.1.0",
+  "description": "A TypeScript library for capturing, sharing, and provenancing doubts/objections in digital humanities and knowledge projects",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "doubts",
+    "objections",
+    "digital-humanities",
+    "knowledge-management",
+    "solid",
+    "rdf",
+    "cidoc-crm",
+    "typescript"
+  ],
+  "author": "pfefferniels",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "dependencies": {
+    "@inrupt/solid-client": "^1.0.0",
+    "@inrupt/solid-client-authn-browser": "^1.0.0",
+    "@inrupt/vocab-common-rdf": "^1.0.0",
+    "linked-rolls": "*",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/uuid": "^9.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "optionalDependencies": {
+    "@mui/material": "^5.0.0",
+    "@mui/icons-material": "^5.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}
