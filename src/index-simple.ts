@@ -10,15 +10,13 @@ export { DoubtManager } from "./core-simple";
 // Vanilla JavaScript UI (no framework dependencies)
 export { DoubtsUI } from "./ui/DoubtsUI";
 
-// Advanced exports with Solid integration (require external dependencies)
-// Uncomment these when @inrupt/solid-client and other dependencies are available:
-// export { DoubtManager as DoubtManagerWithSolid } from "./core";
+// Advanced exports (require external dependencies)
+// Note: These will fail if @inrupt/solid-client is not installed
+// export { DoubtManager as DoubtManagerAdvanced } from "./core";
 // export { doubtToThings, thingToDoubt } from "./serialization";
 
-// React hooks and providers (require React)
-// Uncomment when React is available:
+// React hooks and providers (require React and possibly other dependencies)
 // export { useDoubtContext, DoubtProvider } from "./hooks";
 
 // React components with Material-UI (require @mui/material)
-// Uncomment when Material-UI is available:
 // export { Doubts, RaiseDoubtDialog } from "./components";

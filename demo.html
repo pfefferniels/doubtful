@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doubtful Library Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .content-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .claim {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Doubtful Library Demo</h1>
+    <p>This demo shows how the Doubtful library can be used to capture and manage doubts/objections about digital humanities claims.</p>
+
+    <div class="content-section">
+        <h2>Historical Claim 1</h2>
+        <div class="claim">
+            "The painting was created by Leonardo da Vinci in 1503."
+        </div>
+        <div id="doubt-ui-1"></div>
+    </div>
+
+    <div class="content-section">
+        <h2>Digital Edition Annotation</h2>
+        <div class="claim">
+            "This manuscript contains the earliest known version of the text."
+        </div>
+        <div id="doubt-ui-2"></div>
+    </div>
+
+    <div class="content-section">
+        <h2>Archaeological Finding</h2>
+        <div class="claim">
+            "The pottery shards date to the 3rd century BCE based on stylistic analysis."
+        </div>
+        <div id="doubt-ui-3"></div>
+    </div>
+
+    <script type="module">
+        // This would normally be: import { DoubtManager, DoubtsUI } from 'doubtful';
+        // For this demo, we'll simulate the library
+        
+        class DoubtManager {
+            constructor(config = {}) {
+                this.config = config;
+                this.doubts = [];
+                this.listeners = [];
+            }
+
+            createDoubt(about, question, actorOverride) {
+                const actor = actorOverride || this.config.defaultActor || { name: "Anonymous" };
+                
+                const generateId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+                
+                const doubt = {
+                    id: generateId(),
+                    about,
+                    question: question.trim(),
+                    making: {
+                        actor: {
+                            name: actor.name,
+                            sameAs: actor.sameAs || [],
+                        },
+                    },
+                };
+
+                this.doubts.push(doubt);
+                this.notifyListeners();
+                return doubt;
+            }
+
+            getDoubtsAbout(id) {
+                return this.doubts.filter((d) => d.about === id);
+            }
+
+            getAllDoubts() {
+                return [...this.doubts];
+            }
+
+            subscribe(listener) {
+                this.listeners.push(listener);
+                return () => {
+                    const index = this.listeners.indexOf(listener);
+                    if (index > -1) {
+                        this.listeners.splice(index, 1);
+                    }
+                };
+            }
+
+            notifyListeners() {
+                this.listeners.forEach(listener => listener([...this.doubts]));
+            }
+        }
+
+        class DoubtsUI {
+            constructor(container, about, config, onDoubtAdded) {
+                this.container = container;
+                this.about = about;
+                this.manager = new DoubtManager(config);
+                this.onDoubtAdded = onDoubtAdded;
+                
+                this.manager.subscribe(() => this.render());
+                this.render();
+            }
+
+            render() {
+                const doubts = this.manager.getDoubtsAbout(this.about);
+                const hasDoubts = doubts.length > 0;
+
+                this.container.innerHTML = `
+                    <div style="margin: 8px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <span style="font-weight: bold; color: ${hasDoubts ? '#ff9800' : '#666'};">
+                                ❓ Doubts (${doubts.length})
+                            </span>
+                            <button id="add-doubt-btn-${this.about}" style="
+                                margin-left: 8px; 
+                                padding: 4px 8px; 
+                                border: none; 
+                                border-radius: 4px;
+                                background-color: #2196f3;
+                                color: white;
+                                cursor: pointer;
+                            ">
+                                Add Doubt
+                            </button>
+                        </div>
+
+                        ${doubts.length > 0 ? `
+                            <div style="margin-bottom: 8px;">
+                                ${doubts.map(doubt => `
+                                    <div style="
+                                        padding: 8px; 
+                                        margin-bottom: 4px; 
+                                        background-color: #f5f5f5; 
+                                        border-radius: 4px;
+                                    ">
+                                        <div style="font-weight: bold;">${this.escapeHtml(doubt.question)}</div>
+                                        <div style="font-size: 0.8em; color: #666;">
+                                            by ${this.escapeHtml(doubt.making.actor?.name || 'Unknown')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div style="color: #666; font-style: italic;">
+                                No doubts raised yet.
+                            </div>
+                        `}
+
+                        <div id="doubt-form-${this.about}" style="display: none; margin-top: 8px;">
+                            <textarea id="doubt-question-${this.about}" placeholder="Describe your doubt in form of a question..." style="
+                                width: 100%; 
+                                min-height: 60px; 
+                                padding: 8px; 
+                                border: 1px solid #ccc; 
+                                border-radius: 4px;
+                                resize: vertical;
+                                box-sizing: border-box;
+                            "></textarea>
+                            <div style="margin-top: 8px;">
+                                <button id="submit-doubt-btn-${this.about}" style="
+                                    padding: 8px 16px; 
+                                    border: none; 
+                                    border-radius: 4px;
+                                    background-color: #4caf50;
+                                    color: white;
+                                    cursor: pointer;
+                                    margin-right: 8px;
+                                ">
+                                    Add Doubt
+                                </button>
+                                <button id="cancel-doubt-btn-${this.about}" style="
+                                    padding: 8px 16px; 
+                                    border: none; 
+                                    border-radius: 4px;
+                                    background-color: #f44336;
+                                    color: white;
+                                    cursor: pointer;
+                                ">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                this.attachEventListeners();
+            }
+
+            attachEventListeners() {
+                const addBtn = this.container.querySelector(`#add-doubt-btn-${this.about}`);
+                const form = this.container.querySelector(`#doubt-form-${this.about}`);
+                const textarea = this.container.querySelector(`#doubt-question-${this.about}`);
+                const submitBtn = this.container.querySelector(`#submit-doubt-btn-${this.about}`);
+                const cancelBtn = this.container.querySelector(`#cancel-doubt-btn-${this.about}`);
+
+                addBtn?.addEventListener('click', () => {
+                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                    if (form.style.display === 'block') {
+                        textarea.focus();
+                    }
+                });
+
+                submitBtn?.addEventListener('click', () => {
+                    const question = textarea.value.trim();
+                    if (question) {
+                        const doubt = this.manager.createDoubt(this.about, question);
+                        textarea.value = '';
+                        form.style.display = 'none';
+                        this.onDoubtAdded?.(doubt);
+                    }
+                });
+
+                cancelBtn?.addEventListener('click', () => {
+                    textarea.value = '';
+                    form.style.display = 'none';
+                });
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize doubt UIs for each claim
+        const config = {
+            defaultActor: { name: "Scholar", sameAs: ["https://example.org/scholar"] }
+        };
+
+        new DoubtsUI(
+            document.getElementById('doubt-ui-1'),
+            'leonardo-painting-1503',
+            config,
+            (doubt) => console.log('Doubt added:', doubt)
+        );
+
+        new DoubtsUI(
+            document.getElementById('doubt-ui-2'),
+            'earliest-manuscript-version',
+            config,
+            (doubt) => console.log('Doubt added:', doubt)
+        );
+
+        new DoubtsUI(
+            document.getElementById('doubt-ui-3'),
+            'pottery-3rd-century-bce',
+            config,
+            (doubt) => console.log('Doubt added:', doubt)
+        );
+    </script>
+</body>
+</html>

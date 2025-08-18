@@ -16,8 +16,7 @@
     "rootDir": "./src",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
-    "allowJs": true,
-    "types": ["node"]
+    "allowJs": true
   },
   "include": [
     "src/**/*"

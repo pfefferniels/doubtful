@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "echo 'Tests coming soon' && exit 0"
   },
   "keywords": [
     "doubts",
@@ -17,17 +18,28 @@
     "solid",
     "rdf",
     "cidoc-crm",
-    "typescript"
+    "typescript",
+    "glam",
+    "fact-checking",
+    "argumentation"
   ],
   "author": "pfefferniels",
   "license": "MIT",
   "peerDependencies": {
     "react": "^18.0.0"
   },
-  "dependencies": {
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "dependencies": {},
+  "optionalDependencies": {
     "@inrupt/solid-client": "^1.0.0",
     "@inrupt/solid-client-authn-browser": "^1.0.0",
     "@inrupt/vocab-common-rdf": "^1.0.0",
+    "@mui/material": "^5.0.0",
+    "@mui/icons-material": "^5.0.0",
     "linked-rolls": "*",
     "uuid": "^9.0.0"
   },
@@ -37,12 +49,12 @@
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
   },
-  "optionalDependencies": {
-    "@mui/material": "^5.0.0",
-    "@mui/icons-material": "^5.0.0"
-  },
   "files": [
     "dist",
-    "README.md"
-  ]
+    "README.md",
+    "demo.html"
+  ],
+  "engines": {
+    "node": ">=16"
+  }
 }
