@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import {
   buildThing,
@@ -64,7 +66,7 @@ interface DoubtContextType {
 }
 
 const DoubtContext = createContext<DoubtContextType>({
-  raiseDoubt: () => {},
+  raiseDoubt: () => { },
   getDoubtsAbout: () => [],
   all: [],
   isSyncing: false,
@@ -77,12 +79,12 @@ interface DoubtProviderProps {
   fetch?: typeof solidFetch;
 }
 
-export const DoubtProvider: FC<DoubtProviderProps> = ({
+export const DoubtProvider = ({
   children,
   datasetUrl,
   isLoggedIn,
   fetch = solidFetch,
-}) => {
+}: DoubtProviderProps) => {
   const [dialogOpen, setDialogOpen] = useState<string | undefined>();
   const [doubts, setDoubts] = useState<Doubt[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
