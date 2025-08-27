@@ -14,7 +14,7 @@ export const Doubts: FC<DoubtProps> = ({ about }) => {
 
   return (
     <>
-      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} size='small'>
         <QuestionAnswer color={anchorEl ? "primary" : "inherit"} />
       </IconButton>
       <Popover
